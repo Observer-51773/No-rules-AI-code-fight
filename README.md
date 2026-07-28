@@ -96,23 +96,35 @@ Or, if your virtual environment is already activated:
 python ai_arena.py
 ```
 Controls and Usage
-Main Menu
+Main Menu:
  N: Change user nickname profile.
+
  1: Toggle model/provider for Left Bot.
+
  2: Toggle model/provider for Right Bot.
+
  3: Edit Left Bot tactical goal/directive.
+
  4: Edit Right Bot tactical goal/directive.
+
  5: Load a custom PNG/JPG image to generate an ASCII avatar.
+
  ENTER: Launch match.
+
 Battle Mode
  R: Restart match (available when match ends).
+
  ESC: Exit battle mode and return to Main Menu.
+
 File Structure
  ⁠ai_arena.py⁠: Main application script containing Pygame engine, AI execution loops, and UI rendering.
+
  ⁠user_profile.json⁠: Auto-generated file storing user configuration and active nickname.
+
  ⁠arena_memory.json⁠: Auto-generated persistent storage for successful AI combat code snippets.
+
 License
-This project is open-source and available under the MIT License.
+This project is open-source and available under the MIT License. 
 
 
 
