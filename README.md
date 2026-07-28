@@ -33,39 +33,44 @@ curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | 
 On Windows "PowerShell" 
  ```bash
     powershell -ExecutionPolicy ByPass -c "irm [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | iex"
+ ```
 
 Verify installation:
  ```bash
     uv --version
+```
 
 2. Clone or Prepare the Repository
 Navigate to your project directory:
 ```bash
 git clone [https://github.com/your-username/no-rules-ai-code-fights.git](https://github.com/your-username/no-rules-ai-code-fights.git)
 cd no-rules-ai-code-fights
-
+```
 3. Create a Virtual Environment
 Use ⁠uv⁠ to create a virtual environment:
 ```bash 
 uv venv
+```
 
 Activate the environment:
  On MacOS/Linux:
 ```bash
 source .venv/bin/activate
-
+```
 On Windows (PowerShell):
 ```bash
 .venv\Scripts\Activate.ps1
+```
 
 4.Install Dependencies
 Install the required Python packages into your environment using ⁠uv pip⁠:
 ```bash
 uv pip install pygame ollama pillow
-
+```
 Alternatively, if you prefer running commands without activating the environment manually:
 ```bash
 uv pip install --python .venv pygame ollama pillow
+```
 
 Setting Up Ollama (Optional but Recommended)
 To enable dynamic LLM-driven bot logic:
@@ -78,17 +83,18 @@ To enable dynamic LLM-driven bot logic:
 ollama pull qwen2.5-coder
 ollama pull deepseek-coder
 ollama pull llama3
-
+```
 If Ollama is not installed or running, the application will automatically fall back to rule-based tactical heuristics, allowing full gameplay without external dependencies.
 Running the Application
 Execute the application using ⁠uv⁠:
 ```bash
 uv run python ai_arena.py
+```
 
 Or, if your virtual environment is already activated:
 ```bash
 python ai_arena.py
-
+```
 Controls and Usage
 Main Menu
  N: Change user nickname profile.
