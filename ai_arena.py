@@ -1,4 +1,3 @@
-cat << 'EOF' > ai_arena.py
 import pygame
 import random
 import sys
@@ -275,4 +274,4 @@ while running:
 
 pygame.quit()
 sys.exit()
-EOF
+
