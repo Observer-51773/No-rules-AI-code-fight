@@ -29,11 +29,12 @@ On macOS and Linux:
 curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
 
 On Windows "PowerShell" 
-```bash
-   powershell -ExecutionPolicy ByPass -c "irm [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | iex"
+ ```bash
+    powershell -ExecutionPolicy ByPass -c "irm [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | iex"
 
 Verify installation:
-```bash uv --version
+ ```bash
+    uv --version
 
 2. Clone or Prepare the Repository
 Navigate to your project directory:
