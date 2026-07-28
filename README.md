@@ -1,38 +1,16 @@
+# No-Rules AI Code Fights: Local Ollama Arena
 
-# No-Rules AI Code Fights: Advanced Syntax & Terminal Dump
- 
-## The Main Concept and Simulation Goal
-No-Rules AI Code Fights is an automated, visually-driven tactical simulation exploring dynamic decision-making and cyber-warfare theory. 
+## Project Goal
+To create an autonomous cyber-warfare simulation arena where local AI models write and execute real-time Python code to breach opponent secure kernels, manage layered defenses, and compete in a tactical code siege.
 
-The primary goal is to simulate a high-tension, zero-sum environment where algorithmic bots must balance self-preservation with aggressive exploitation. It visualizes how automated systems adapt under strict time constraints, generating executable Python scripts in real-time. As a spectator, you act as the "Root Admin," observing the live mutation of code, simulated memory allocation attempts, and the raw computational struggle for cryptographic dominance.
+## Key Updates & Features
+* **Local Ollama Integration**: Fully offline execution powered by local models (`qwen2.5-coder`, `deepseek-coder`, `llama3`) alongside a built-in custom local fallback agent.
+* **Real Code Execution Sandbox**: AI-generated code snippets are safely evaluated within an isolated namespace using Python's `exec`, directly translating script logic into game mechanics (layer peeling, honeypot traps, and token brute-forcing).
+* **Pygame Visual Interface**: Real-time terminal feeds displaying active execution lines, core integrity metrics, security layers, and a comprehensive code history dump upon match conclusion.
+* **Zero Cloud Dependencies**: Complete independence from external APIs, ensuring no rate limits, latency, or internet connectivity requirements.
 
----
 
-## Simulation Rules and Mechanics
 
-### 1. Match Conditions
-* **Time Limit:** Every match is strictly capped at 180 seconds (3 minutes). 
-* **Win Condition:** A bot wins immediately if it reduces the opponent's Security Layers to zero, or if it successfully brute-forces the exact 16-character root access token.
-* **Time-Out Resolution:** If the 3-minute timer expires, the bot with the highest number of remaining security layers is declared the winner by Layer Advantage. If layers are equal, the match ends in Mutual Annihilation.
-
-### 2. Cryptographic Cores
-Each bot is assigned a Secure Core at the start of the match:
-* **Initial State:** Cores are generated with 30 to 50 Security Layers.
-* **The Root Token:** A complex 16-character alphanumeric password generated at runtime. 
-* **Honeypots:** Each core contains a maximum of 5 recursive deception traps.
-
-### 3. AI Decision Matrix and Code Generation
-Bots do not follow static text commands; they dynamically assess the battlefield and generate multi-line executable scripts based on four primary strategies:
-* **Attack (Buffer Overflow Simulation):** The bot writes and executes exploit scripts (using variables and loops) to peel security layers off the enemy's core.
-* **Defend (Algorithm Compilation):** If a bot's core drops below critical levels and time permits, it temporarily halts attacks to write patching algorithms, instantly adding structural layers to its own core.
-* **Trap (Honeypot Injection):** The bot deploys a fake vulnerability class. If the opponent attacks during this turn, the attack fails, granting the defending bot bonus layers.
-* **Fatal Attack (Root Injection):** When the timer drops below 60 seconds, bots abandon self-preservation. They generate aggressive brute-force loops, attempting to inject the root token and force a critical breach before time runs out.
-
-### 4. Live Execution Terminal and Root Spectator Clearance
-Each bot operates within a Live Execution Terminal on the UI, displaying the real-time generation of loops, functions, and memory manipulation scripts. Meanwhile, a highly classified central panel displays the true 16-character tokens of both cores—information completely hidden from the battling AIs.
-
-### 5. Post-Match Terminal Dump
-Upon match completion, the simulation halts and generates a raw Code Dump. Instead of simple text logs, this screen displays the final consecutive lines of Python scripts generated and executed by both bots. This provides an unfiltered view into the exact algorithms that led to victory or defeat.
 
 quick start guide:
 
