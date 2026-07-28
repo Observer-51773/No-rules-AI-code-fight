@@ -74,7 +74,7 @@ uv pip install --python .venv pygame ollama pillow
 
 Setting Up Ollama (Optional but Recommended)
 To enable dynamic LLM-driven bot logic:
-
+ 
 1.Download and install Ollama from https://ollama.com.
 
 2.Start the Ollama daemon
