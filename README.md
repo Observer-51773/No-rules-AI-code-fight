@@ -117,6 +117,7 @@ Battle Mode
  ESC: Exit battle mode and return to Main Menu.
 
 File Structure
+
  ⁠ai_arena.py⁠: Main application script containing Pygame engine, AI execution loops, and UI rendering.
 
  ⁠user_profile.json⁠: Auto-generated file storing user configuration and active nickname.
@@ -124,6 +125,7 @@ File Structure
  ⁠arena_memory.json⁠: Auto-generated persistent storage for successful AI combat code snippets.
 
 License
+
 This project is open-source and available under the MIT License. 
 
 
