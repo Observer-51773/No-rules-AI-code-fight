@@ -113,7 +113,8 @@ Main Menu:
 
  ENTER: Launch match.
 
-Battle Mode
+Battle Mode: 
+
  R: Restart match (available when match ends).
 
  ESC: Exit battle mode and return to Main Menu.
