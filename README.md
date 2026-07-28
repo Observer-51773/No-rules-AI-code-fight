@@ -15,6 +15,24 @@ To create an autonomous cyber-warfare simulation arena where local AI models wri
 1. **Prerequisites**: Ensure Python 3, Pygame, and Ollama are installed on your system.
 2. **Create and Activate Virtual Environment**:
    ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+   uv venv
+
+3. ```bash 
+   uv pip install pygame ollama
+
+4. ```bash 
+   uv pip install pygame ollama
+
+5. ```bash
+   ollama pull qwen2.5-coder
+   ollama pull deepseek-coder
+   ollama pull llama3
+
+6. ```bash
+   uv run python3 ai_arena.py
+
+
+ 
+
+
 
