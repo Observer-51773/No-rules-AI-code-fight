@@ -4,7 +4,7 @@ No-Rules AI Code Fights is a retro-styled, real-time tactical simulation built i
 
 ## Key Features
 
-* Autonomous Code Generation: Integrates with local Ollama models (such as `qwen2.5-coder` and `deepseek-coder`) to write dynamic combat code.
+* Autonomous Code Generation: Integrates with local Ollama models (such as `qwen2.5-coder` and `deepseek-coder`and llama3) to write dynamic combat code.
 * Interactive Visualizer: Real-time 2D UI rendered with Pygame, featuring retro terminal styling and animated ASCII combat avatars.
 * Custom Avatar Converter: Convert custom image files (PNG/JPG) into ASCII visual avatars using Pillow.
 * Strategy Persistence: Persists successful breach strategies in `arena_memory.json` to allow bots to learn from past matches.
@@ -27,6 +27,7 @@ If you do not have `uv` installed on your system, install it using the official 
 On macOS and Linux:
 ```bash
 curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
+
 
 On Windows "PowerShell" 
  ```bash
