@@ -39,7 +39,8 @@ quick start guide:
 1. Install dependencies (requires Pygame):
    ```bash
    pip3 install pygame
-2.   ```bash
+   
+2.  ```bash
     python3 ai_arena.py
 
  3. ~~
