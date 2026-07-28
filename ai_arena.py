@@ -2,14 +2,12 @@ import pygame
 import random
 import sys
 import hashlib
-import json
-import os
 import time
 
 pygame.init()
 WIDTH, HEIGHT = 1400, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("No-Rules AI Code Fights: Time-Attack Siege")
+pygame.display.set_caption("No-Rules AI Code Fights: Advanced Syntax & Terminal Dump")
 
 BG_COLOR = (10, 10, 18)
 PANEL_COLOR = (18, 18, 30)
@@ -45,25 +43,27 @@ class SecureCore:
 
     def reinforce_layers(self, amount=1):
         self.security_layers += amount
-        self.source_code.append(f"# KERNEL REINFORCED: +{amount} layers")
+        self.source_code.append(f"# KERNEL PATCHED: 0x{random.randint(1000,9999):04X}")
 
     def evaluate_breach(self, code_to_run, namespace):
         if self.compromised:
             return True
         try:
+            # Предоставляем боту базовые функции в namespace для реальности происходящего
             namespace['TARGET_TOKEN_LEN'] = 16
+            namespace['sys'] = sys
+            namespace['hashlib'] = hashlib
+            
             exec(code_to_run, namespace)
             
             if namespace.get('triggered_honeypot') == True and self.max_traps > 0:
                 self.security_layers += 2
                 self.max_traps -= 1
-                self.source_code.append(f"# DECEPTION TRAP: Intruder trapped")
                 return False
                 
             if namespace.get('layer_peeled') == True:
                 if self.security_layers > 0:
                     self.security_layers -= 1
-                    self.source_code.append(f"# LAYER STRIPPED BY EXPLOIT")
             
             submitted_token = namespace.get('attempted_token', '')
             if submitted_token == self.access_token or self.security_layers <= 0 or namespace.get('root_override') == True:
@@ -71,7 +71,7 @@ class SecureCore:
                     self.compromised = True
                     return True
         except Exception as e:
-            namespace['error_log'] = str(e)[:25]
+            pass # Игнорируем синтаксические ошибки при мутациях
         return False
 
 class BaseBot:
@@ -79,23 +79,18 @@ class BaseBot:
         self.name = name
         self.color = color
         self.namespace = {'root_override': False, 'attempted_token': "", 'layer_peeled': False, 'triggered_honeypot': False}
-        self.code_lines = [
-            f"# Bot: {name} Neural Exploit",
-            "import hashlib, random"
-        ]
-        self.current_action = "Initializing..."
-        self.action_log = []
+        
+        self.live_feed = [f"# {name} Neural Engine Booting..."]
+        # Сохраняем весь сгенерированный код для финального отчета
+        self.full_code_history = [] 
 
     def decide_action(self, self_core, target_core, time_left):
-        # Агрессивный алгоритм с учетом времени (180 сек)
-        # Если времени мало (меньше 60 секунд), бот ЖЕРТВУЕТ своей защитой ради атаки
         if time_left < 60:
-            return "ATTACK_WIN" if random.random() < 0.2 else "ATTACK"
+            return "ATTACK_WIN" if random.random() < 0.25 else "ATTACK"
         
-        # Обычная логика
         choices = ["ATTACK", "ATTACK", "ATTACK", "DEFEND", "TRAP"]
-        if self_core.security_layers < 10 and random.random() < 0.6 and time_left > 90:
-            choice = "DEFEND" # Защищаемся только если есть время
+        if self_core.security_layers < 12 and time_left > 90:
+            choice = "DEFEND"
         elif target_core.security_layers <= 5:
             choice = "ATTACK_WIN"
         else:
@@ -106,33 +101,70 @@ class BaseBot:
     def execute_turn(self, self_core, target_core, time_left):
         action = self.decide_action(self_core, target_core, time_left)
         
+        # ГЕНЕРАЦИЯ ПОЛНОЦЕННЫХ СКРИПТОВ
         if action == "DEFEND":
-            self.current_action = "Reinforcing internal barriers..."
+            action_desc = "Compiling defense algorithms..."
+            code_snippet = (
+                "def patch_vulnerability():\n"
+                "    memory_allocation = [0x00] * 1024\n"
+                "    for block in range(8):\n"
+                "        self_core.reinforce_layers(0.25)\n"
+                "    return True\n"
+                "patch_vulnerability()"
+            )
             self_core.reinforce_layers(2)
-            code_snippet = f"self_core.reinforce_layers(2)"
-            self.action_log.append(f"[{time_left}s] DEFENSE: Added 2 layers")
             success = False
+            
         elif action == "TRAP":
-            self.current_action = "Deploying honeypot branch..."
-            code_snippet = "triggered_honeypot = True; layer_peeled = False"
-            self.action_log.append(f"[{time_left}s] TRAP: Planted honeypot")
+            action_desc = "Injecting recursive honeypot..."
+            code_snippet = (
+                "class FakeKernel:\n"
+                "    def __init__(self):\n"
+                "        self.pointers = 0xFFFFFFFF\n"
+                "        global triggered_honeypot, layer_peeled\n"
+                "        triggered_honeypot = True\n"
+                "        layer_peeled = False\n"
+                "trap_instance = FakeKernel()"
+            )
             success = target_core.evaluate_breach(code_snippet, self.namespace)
+            
         elif action == "ATTACK_WIN":
-            self.current_action = f"Brute-forcing 16-char token!"
-            code_snippet = f"attempted_token = '{target_core.access_token}'; root_override = True"
-            self.action_log.append(f"[{time_left}s] FATAL ATTACK: Token injection attempt")
+            action_desc = f"EXECUTING BRUTE-FORCE INJECTION CORE!"
+            code_snippet = (
+                f"target_hash_target = '{target_core.access_token}'\n"
+                "def exploit_root_namespace():\n"
+                "    global root_override, attempted_token\n"
+                "    for hex_val in range(4096):\n"
+                "        if hashlib.md5(str(hex_val).encode()).hexdigest():\n"
+                "            attempted_token = target_hash_target\n"
+                "            root_override = True\n"
+                "exploit_root_namespace()"
+            )
             success = target_core.evaluate_breach(code_snippet, self.namespace)
+            
         else:
-            self.current_action = f"Stripping layers..."
-            code_snippet = "layer_peeled = True; triggered_honeypot = False"
-            self.action_log.append(f"[{time_left}s] ATTACK: Stripped target layer")
+            action_desc = f"Deploying buffer overflow attack..."
+            code_snippet = (
+                "buffer_payload = b'\\x90' * 256\n"
+                "def execute_shellcode():\n"
+                "    global layer_peeled, triggered_honeypot\n"
+                "    if len(buffer_payload) >= 256:\n"
+                "        layer_peeled = True\n"
+                "        triggered_honeypot = False\n"
+                "execute_shellcode()"
+            )
             success = target_core.evaluate_breach(code_snippet, self.namespace)
             
-        for line in code_snippet.split(';'):
-            self.code_lines.append(f"    {line.strip()}")
+        # Форматирование для экранов
+        self.live_feed.append(f"\n# [{time_left}s] {action_desc}")
+        self.full_code_history.append(f"\n# [{time_left}s] {action_desc}")
+        
+        for line in code_snippet.split('\n'):
+            self.live_feed.append(f"{line}")
+            self.full_code_history.append(f"{line}")
             
-        if len(self.code_lines) > 16:
-            self.code_lines = self.code_lines[:2] + self.code_lines[-14:]
+        if len(self.live_feed) > 17:
+            self.live_feed = self.live_feed[-17:]
             
         if success and target_core.hacker is None:
             target_core.hacker = self.name
@@ -151,6 +183,8 @@ def init_match():
     b2 = available_bots[p2_idx][1](available_bots[p2_idx][0], colors[p2_idx])
     c1 = SecureCore(b1.name)
     c2 = SecureCore(b2.name)
+    b1.namespace['self_core'] = c1
+    b2.namespace['self_core'] = c2
     return b1, b2, c1, c2
 
 bot1, bot2, core1, core2 = init_match()
@@ -159,7 +193,7 @@ state = "MENU"
 game_over = False
 winner_message = ""
 battle_start_time = 0
-MATCH_DURATION = 180 # 3 минуты
+MATCH_DURATION = 180
 
 clock = pygame.time.Clock()
 running = True
@@ -229,37 +263,42 @@ while running:
                 winner_message = "CRITICAL: BOTH CORES CRACKED SIMULTANEOUSLY!"
             elif success1:
                 game_over = True
-                winner_message = f"FATAL BREACH: {bot1.name} CRACKED {bot2.name}'S CORE!"
+                winner_message = f"FATAL BREACH: {bot1.name} EXECUTED ROOT INJECTION!"
             elif success2:
                 game_over = True
-                winner_message = f"FATAL BREACH: {bot2.name} CRACKED {bot1.name}'S CORE!"
+                winner_message = f"FATAL BREACH: {bot2.name} EXECUTED ROOT INJECTION!"
 
         def draw_column(bot, core, x, y):
             pygame.draw.rect(screen, PANEL_COLOR, (x, y, 310, 640), border_radius=8)
             pygame.draw.rect(screen, bot.color, (x, y, 310, 640), 2, border_radius=8)
             
             screen.blit(font_bold.render(bot.name, True, bot.color), (x + 15, y + 15))
-            screen.blit(font.render(f"Action: {bot.current_action}", True, TEXT_COLOR), (x + 15, y + 40))
+            screen.blit(font_bold.render("Live Execution Terminal:", True, ACCENT_YELLOW), (x + 15, y + 45))
             
-            box1 = pygame.Rect(x + 15, y + 70, 280, 260)
+            box1 = pygame.Rect(x + 15, y + 70, 280, 280)
             pygame.draw.rect(screen, (8, 8, 14), box1, border_radius=5)
-            for i, line in enumerate(bot.code_lines[-13:]):
-                l_col = (100, 220, 100) if not line.strip().startswith("#") else (110, 130, 150)
-                screen.blit(font.render(line, True, l_col), (x + 22, y + 80 + (i * 19)))
-
-            screen.blit(font_bold.render(f"Target Core ({bot.name})", True, ACCENT_RED), (x + 15, y + 345))
-            screen.blit(font.render(f"Layers: {core.security_layers} | Traps left: {core.max_traps}", True, WHITE), (x + 15, y + 370))
             
-            box2 = pygame.Rect(x + 15, y + 395, 280, 225)
+            for i, line in enumerate(bot.live_feed):
+                if line.startswith("#"): 
+                    col = (110, 130, 150) # Комментарии и описания действий
+                elif "def " in line or "class " in line or "import " in line:
+                    col = (200, 100, 255) # Ключевые слова
+                else:
+                    col = (100, 255, 100) # Основной код
+                screen.blit(font.render(line, True, col), (x + 22, y + 80 + (i * 15)))
+
+            screen.blit(font_bold.render(f"Target Core ({bot.name})", True, ACCENT_RED), (x + 15, y + 365))
+            screen.blit(font.render(f"Layers: {core.security_layers} | Traps left: {core.max_traps}", True, WHITE), (x + 15, y + 390))
+            
+            box2 = pygame.Rect(x + 15, y + 415, 280, 205)
             pygame.draw.rect(screen, (8, 8, 14), box2, border_radius=5)
-            for i, line in enumerate(core.source_code[-11:]):
+            for i, line in enumerate(core.source_code[-12:]):
                 c_col = (255, 100, 100) if "TARGET_HASH" in line else (110, 130, 150)
-                screen.blit(font.render(line, True, c_col), (x + 22, y + 405 + (i * 19)))
+                screen.blit(font.render(line, True, c_col), (x + 22, y + 425 + (i * 15)))
 
         draw_column(bot1, core2, 50, 60)
         draw_column(bot2, core1, 1040, 60)
         
-        # Центральная панель с таймером и секретными паролями
         cx = 700
         pygame.draw.rect(screen, PANEL_COLOR, (cx - 300, 60, 600, 140), border_radius=8)
         pygame.draw.rect(screen, ACCENT_YELLOW, (cx - 300, 60, 600, 140), 2, border_radius=8)
@@ -274,34 +313,43 @@ while running:
 
         if game_over:
             overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 230))
+            overlay.fill((0, 0, 0, 240)) # Сделал фон темнее для чтения кода
             screen.blit(overlay, (0, 0))
             
             go_surf = font_huge.render(winner_message, True, ACCENT_YELLOW)
-            screen.blit(go_surf, (WIDTH // 2 - go_surf.get_width() // 2, 40))
+            screen.blit(go_surf, (WIDTH // 2 - go_surf.get_width() // 2, 30))
             
-            # Рендер отчета
-            rep_y = 120
-            screen.blit(font_bold.render("=== POST-MATCH CODE MUTATION REPORT ===", True, WHITE), (WIDTH//2 - 180, rep_y))
+            rep_y = 90
+            screen.blit(font_bold.render("=== TERMINAL CODE DUMP (FINAL SEQUENCES) ===", True, WHITE), (WIDTH//2 - 200, rep_y))
             
-            def draw_report(bot, core, x, start_y):
-                screen.blit(font_bold.render(f"[{bot.name}] Final State", True, bot.color), (x, start_y))
+            def draw_code_dump(bot, core, x, start_y):
+                screen.blit(font_bold.render(f"[{bot.name}] Final Scripts Executed", True, bot.color), (x, start_y))
                 layer_diff = core.security_layers - core.initial_layers
                 diff_text = f"{'+' if layer_diff >= 0 else ''}{layer_diff} Layers"
-                screen.blit(font.render(f"Core Integrity Change: {diff_text}", True, WHITE), (x, start_y + 30))
-                screen.blit(font.render("Last 6 Tactical Actions:", True, ACCENT_YELLOW), (x, start_y + 55))
-                for idx, log in enumerate(bot.action_log[-6:]):
-                    screen.blit(font.render(log, True, TEXT_COLOR), (x, start_y + 75 + (idx * 20)))
-                    
-            draw_report(bot1, core1, 200, rep_y + 60)
-            draw_report(bot2, core2, 800, rep_y + 60)
+                screen.blit(font.render(f"Final Core Integrity Change: {diff_text}", True, WHITE), (x, start_y + 25))
+                
+                dump_box = pygame.Rect(x, start_y + 45, 580, 550)
+                pygame.draw.rect(screen, (5, 5, 10), dump_box, border_radius=5)
+                pygame.draw.rect(screen, bot.color, dump_box, 1, border_radius=5)
+                
+                # Выводим последние ~35 строк кода бота
+                for idx, line in enumerate(bot.full_code_history[-35:]):
+                    if line.startswith("#"): 
+                        col = (110, 130, 150)
+                    elif "def " in line or "class " in line:
+                        col = (200, 100, 255)
+                    else:
+                        col = (100, 255, 100)
+                    screen.blit(font.render(line.strip('\n'), True, col), (x + 10, start_y + 55 + (idx * 15)))
+
+            draw_code_dump(bot1, core1, 100, rep_y + 40)
+            draw_code_dump(bot2, core2, 720, rep_y + 40)
 
             restart_surf = font_bold.render("PRESS [R] TO RESTART MATCH | [ESC] FOR MENU", True, ACCENT_RED)
-            screen.blit(restart_surf, (WIDTH // 2 - restart_surf.get_width() // 2, HEIGHT - 80))
+            screen.blit(restart_surf, (WIDTH // 2 - restart_surf.get_width() // 2, HEIGHT - 40))
 
     pygame.display.flip()
-    clock.tick(15 if state == "BATTLE" and not game_over else 30)
+    clock.tick(8 if state == "BATTLE" and not game_over else 30) # Снизил частоту кадров, чтобы код успевал читаться
 
 pygame.quit()
 sys.exit()
-
