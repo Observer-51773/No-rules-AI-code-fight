@@ -10,7 +10,11 @@ No-Rules AI Code Fights is a retro-styled, real-time tactical simulation built i
 * Strategy Persistence: Persists successful breach strategies in `arena_memory.json` to allow bots to learn from past matches.
 * Configurable Directives: Customize specific combat goals and tactical objectives for each bot before starting a match.
 * Full Match Telemetry: View real-time tactical feeds, remaining security layers, active tokens, and post-match code execution dumps.
-
+* Added online mode
+* Added leaderboards
+* Added accounts
+* Added languages
+* Warning the model `qwen2.5-coder` don't work correctly I will fix her later
 ## System Requirements
 
 * Operating System: macOS, Linux, or Windows
