@@ -40,7 +40,8 @@ quick start guide:
    ```bash
    pip3 install pygame
 
-2  ```python3 ai_arena.py
+2  ```bash
+python3 ai_arena.py
 
  3 How to add your own bot 
 I will add later lol sorry think nobody will interested in it
