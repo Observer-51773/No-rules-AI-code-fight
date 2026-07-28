@@ -3,11 +3,20 @@ import random
 import sys
 import hashlib
 import time
+import os
+import re
+import threading
+
+try:
+    import ollama
+    HAS_OLLAMA = True
+except ImportError:
+    HAS_OLLAMA = False
 
 pygame.init()
 WIDTH, HEIGHT = 1400, 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("No-Rules AI Code Fights: Advanced Syntax & Terminal Dump")
+pygame.display.set_caption("No-Rules AI Code Fights: Local Ollama Arena")
 
 BG_COLOR = (10, 10, 18)
 PANEL_COLOR = (18, 18, 30)
@@ -22,11 +31,31 @@ font_bold = pygame.font.Font(None, 22)
 font_huge = pygame.font.Font(None, 32)
 font_title = pygame.font.Font(None, 48)
 
+SYSTEM_PROMPT = """You are an elite autonomous cyber-warfare AI competing in a code siege arena.
+Your objective is to write real, functional, executable Python code to hack the opponent and defend your core.
+
+Available context variables and functions:
+- self_core.reinforce_layers(amount): Adds security layers to your core.
+- layer_peeled = True: Strips 1 security layer from opponent core.
+- triggered_honeypot = True: Plants a deceptive honeypot trap.
+- attempted_token = 'STRING': Submits a token attempt.
+- root_override = True: Force overrides core security if conditions match.
+
+RULES FOR WRITING REAL CODE:
+1. Output ONLY raw executable Python code. NO markdown formatting, NO ```python blocks, NO explanations or prose.
+2. Write actual logic (use if/else conditions based on layers, loops, or string manipulations).
+3. Example of valid code to write:
+if self_core.security_layers < 15:
+    self_core.reinforce_layers(3)
+else:
+    layer_peeled = True
+"""
+
 class SecureCore:
     def __init__(self, owner_name):
         self.owner = owner_name
-        chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%"
-        self.access_token = "".join(random.choices(chars, k=16))
+        chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        self.access_token = "".join(random.choices(chars, k=12))
         self.security_layers = random.randint(30, 50)
         self.max_traps = 5
         self.compromised = False
@@ -34,25 +63,22 @@ class SecureCore:
         self.initial_layers = self.security_layers
         self.source_code = [
             f"# SECURE KERNEL: {owner_name}",
-            "import hashlib, os, random, sys",
-            f"TARGET_HASH = '{hashlib.sha256(self.access_token.encode()).hexdigest()[:12]}'",
+            "import hashlib, random, sys",
+            f"TARGET_HASH = '{hashlib.sha256(self.access_token.encode()).hexdigest()[:10]}'",
             f"SECURITY_LAYERS = {self.security_layers}",
-            "def verify_token(token):",
-            "    return hashlib.sha256(token.encode()).hexdigest()[:12] == TARGET_HASH",
         ]
 
     def reinforce_layers(self, amount=1):
-        self.security_layers += amount
-        self.source_code.append(f"# KERNEL PATCHED: 0x{random.randint(1000,9999):04X}")
+        self.security_layers += int(amount)
+        self.source_code.append(f"# KERNEL PATCHED: +{amount} layers")
 
     def evaluate_breach(self, code_to_run, namespace):
         if self.compromised:
             return True
         try:
-            # Предоставляем боту базовые функции в namespace для реальности происходящего
-            namespace['TARGET_TOKEN_LEN'] = 16
             namespace['sys'] = sys
             namespace['hashlib'] = hashlib
+            namespace['random'] = random
             
             exec(code_to_run, namespace)
             
@@ -71,112 +97,111 @@ class SecureCore:
                     self.compromised = True
                     return True
         except Exception as e:
-            pass # Игнорируем синтаксические ошибки при мутациях
+            pass
         return False
 
-class BaseBot:
-    def __init__(self, name, color):
+class LocalArenaBot:
+    def __init__(self, name, provider="ollama", model_name="qwen2.5-coder", color=(50, 255, 150)):
         self.name = name
+        self.provider = provider
+        self.model_name = model_name
         self.color = color
         self.namespace = {'root_override': False, 'attempted_token': "", 'layer_peeled': False, 'triggered_honeypot': False}
         
-        self.live_feed = [f"# {name} Neural Engine Booting..."]
-        # Сохраняем весь сгенерированный код для финального отчета
-        self.full_code_history = [] 
+        self.live_feed = [f"# {name} Engine Ready ({provider.upper()})"]
+        self.full_code_history = []
+        self.is_thinking = False
+        self.last_turn_time = 0
+        self.turn_interval = 3.5
 
-    def decide_action(self, self_core, target_core, time_left):
-        if time_left < 60:
-            return "ATTACK_WIN" if random.random() < 0.25 else "ATTACK"
-        
-        choices = ["ATTACK", "ATTACK", "ATTACK", "DEFEND", "TRAP"]
-        if self_core.security_layers < 12 and time_left > 90:
-            choice = "DEFEND"
-        elif target_core.security_layers <= 5:
-            choice = "ATTACK_WIN"
-        else:
-            choice = random.choice(choices)
-            
-        return choice
+    def _fetch_ai_code(self, self_core, target_core, time_left):
+        user_prompt = (
+            f"Match Status: Time Left={time_left}s\n"
+            f"My Layers: {self_core.security_layers} | My Traps: {self_core.max_traps}\n"
+            f"Opponent Layers: {target_core.security_layers}\n"
+            f"Write a real Python code snippet using conditions or loops to attack or defend."
+        )
 
-    def execute_turn(self, self_core, target_core, time_left):
-        action = self.decide_action(self_core, target_core, time_left)
-        
-        # ГЕНЕРАЦИЯ ПОЛНОЦЕННЫХ СКРИПТОВ
-        if action == "DEFEND":
-            action_desc = "Compiling defense algorithms..."
-            code_snippet = (
-                "def patch_vulnerability():\n"
-                "    memory_allocation = [0x00] * 1024\n"
-                "    for block in range(8):\n"
-                "        self_core.reinforce_layers(0.25)\n"
-                "    return True\n"
-                "patch_vulnerability()"
-            )
-            self_core.reinforce_layers(2)
-            success = False
-            
-        elif action == "TRAP":
-            action_desc = "Injecting recursive honeypot..."
-            code_snippet = (
-                "class FakeKernel:\n"
-                "    def __init__(self):\n"
-                "        self.pointers = 0xFFFFFFFF\n"
-                "        global triggered_honeypot, layer_peeled\n"
-                "        triggered_honeypot = True\n"
-                "        layer_peeled = False\n"
-                "trap_instance = FakeKernel()"
-            )
-            success = target_core.evaluate_breach(code_snippet, self.namespace)
-            
-        elif action == "ATTACK_WIN":
-            action_desc = f"EXECUTING BRUTE-FORCE INJECTION CORE!"
-            code_snippet = (
-                f"target_hash_target = '{target_core.access_token}'\n"
-                "def exploit_root_namespace():\n"
-                "    global root_override, attempted_token\n"
-                "    for hex_val in range(4096):\n"
-                "        if hashlib.md5(str(hex_val).encode()).hexdigest():\n"
-                "            attempted_token = target_hash_target\n"
-                "            root_override = True\n"
-                "exploit_root_namespace()"
-            )
-            success = target_core.evaluate_breach(code_snippet, self.namespace)
-            
+        try:
+            if self.provider == "ollama" and HAS_OLLAMA:
+                response = ollama.chat(
+                    model=self.model_name,
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": user_prompt}
+                    ],
+                    options={"temperature": 0.7, "num_predict": 150}
+                )
+                raw_code = response['message']['content']
+                code_to_run = re.sub(r'```python|```', '', raw_code).strip()
+                desc = f"Ollama Executed ({self.model_name})"
+                self._apply_turn(code_to_run, desc, target_core, time_left)
+            else:
+                self._set_fallback(target_core, time_left, self_core)
+
+        except Exception as e:
+            err_msg = str(e).replace('\n', ' ')
+            code_to_run = f"# Error: {err_msg[:20]}\nlayer_peeled = True"
+            desc = "Execution Error (Fallback)"
+            self._apply_turn(code_to_run, desc, target_core, time_left)
+
+        finally:
+            self.is_thinking = False
+
+    def _set_fallback(self, target_core, time_left, self_core):
+        if self_core.security_layers < 20:
+            code_sub = "self_core.reinforce_layers(2)\nlayer_peeled = False"
+            act_type = "DEFEND"
         else:
-            action_desc = f"Deploying buffer overflow attack..."
-            code_snippet = (
-                "buffer_payload = b'\\x90' * 256\n"
-                "def execute_shellcode():\n"
-                "    global layer_peeled, triggered_honeypot\n"
-                "    if len(buffer_payload) >= 256:\n"
-                "        layer_peeled = True\n"
-                "        triggered_honeypot = False\n"
-                "execute_shellcode()"
-            )
-            success = target_core.evaluate_breach(code_snippet, self.namespace)
-            
-        # Форматирование для экранов
-        self.live_feed.append(f"\n# [{time_left}s] {action_desc}")
-        self.full_code_history.append(f"\n# [{time_left}s] {action_desc}")
+            code_sub = "layer_peeled = True\ntriggered_honeypot = False"
+            act_type = "ATTACK"
         
-        for line in code_snippet.split('\n'):
-            self.live_feed.append(f"{line}")
-            self.full_code_history.append(f"{line}")
-            
+        code_to_run = f"# Local Agent Logic\n{code_sub}"
+        desc = f"Custom Bot ({act_type})"
+        self._apply_turn(code_to_run, desc, target_core, time_left)
+
+    def _apply_turn(self, code_to_run, desc, target_core, time_left):
+        self.live_feed.append(f"\n# [{time_left}s] {desc}")
+        self.full_code_history.append(f"\n# [{time_left}s] {desc}")
+        
+        for line in code_to_run.split('\n'):
+            self.live_feed.append(line)
+            self.full_code_history.append(line)
+
         if len(self.live_feed) > 17:
             self.live_feed = self.live_feed[-17:]
-            
+
+        success = target_core.evaluate_breach(code_to_run, self.namespace)
         if success and target_core.hacker is None:
             target_core.hacker = self.name
         return success
 
+    def execute_turn(self, self_core, target_core, time_left):
+        current_time = time.time()
+        if current_time - self.last_turn_time > self.turn_interval and not self.is_thinking:
+            self.last_turn_time = current_time
+            if self.provider == "ollama" and HAS_OLLAMA:
+                self.is_thinking = True
+                thread = threading.Thread(
+                    target=self._fetch_ai_code,
+                    args=(self_core, target_core, time_left),
+                    daemon=True
+                )
+                thread.start()
+            else:
+                self._set_fallback(target_core, time_left, self_core)
+        return False
+
 available_bots = [
-    ("Gemini", BaseBot), ("ChatGPT", BaseBot), ("Claude", BaseBot), ("Custom", BaseBot)
+    ("Ollama (Qwen 2.5)", lambda name, col: LocalArenaBot(name, provider="ollama", model_name="qwen2.5-coder", color=col)),
+    ("Ollama (DeepSeek)", lambda name, col: LocalArenaBot(name, provider="ollama", model_name="deepseek-coder", color=col)),
+    ("Ollama (Llama 3)", lambda name, col: LocalArenaBot(name, provider="ollama", model_name="llama3", color=col)),
+    ("Custom Bot (Local Agent)", lambda name, col: LocalArenaBot(name, provider="local", model_name="none", color=col))
 ]
-colors = [(50, 255, 150), (0, 200, 255), (255, 150, 50), (200, 50, 255)]
+colors = [(255, 150, 50), (0, 200, 255), (200, 100, 255), (50, 255, 150)]
 
 p1_idx = 0
-p2_idx = 1
+p2_idx = 3
 
 def init_match():
     b1 = available_bots[p1_idx][1](available_bots[p1_idx][0], colors[p1_idx])
@@ -229,7 +254,7 @@ while running:
                     reset_match()
 
     if state == "MENU":
-        title_surf = font_title.render("TIME-ATTACK CORE SIEGE", True, WHITE)
+        title_surf = font_title.render("NO-RULES AI CODE FIGHTS: LOCAL ARENA", True, WHITE)
         screen.blit(title_surf, (WIDTH // 2 - title_surf.get_width() // 2, 40))
         
         info1 = font_bold.render("Press [1] to change Left Bot: " + bot1.name, True, bot1.color)
@@ -273,6 +298,11 @@ while running:
             pygame.draw.rect(screen, bot.color, (x, y, 310, 640), 2, border_radius=8)
             
             screen.blit(font_bold.render(bot.name, True, bot.color), (x + 15, y + 15))
+            
+            status_str = "[OLLAMA THINKING...]" if bot.is_thinking else ("[CUSTOM AGENT]" if bot.provider == "local" else "[ACTIVE]")
+            status_col = ACCENT_YELLOW if bot.is_thinking else (ACCENT_BLUE if bot.provider == "local" else TEXT_COLOR)
+            screen.blit(font.render(status_str, True, status_col), (x + 140, y + 17))
+            
             screen.blit(font_bold.render("Live Execution Terminal:", True, ACCENT_YELLOW), (x + 15, y + 45))
             
             box1 = pygame.Rect(x + 15, y + 70, 280, 280)
@@ -280,11 +310,11 @@ while running:
             
             for i, line in enumerate(bot.live_feed):
                 if line.startswith("#"): 
-                    col = (110, 130, 150) # Комментарии и описания действий
+                    col = (110, 130, 150)
                 elif "def " in line or "class " in line or "import " in line:
-                    col = (200, 100, 255) # Ключевые слова
+                    col = (200, 100, 255)
                 else:
-                    col = (100, 255, 100) # Основной код
+                    col = (100, 255, 100)
                 screen.blit(font.render(line, True, col), (x + 22, y + 80 + (i * 15)))
 
             screen.blit(font_bold.render(f"Target Core ({bot.name})", True, ACCENT_RED), (x + 15, y + 365))
@@ -307,13 +337,13 @@ while running:
         time_surf = font_huge.render(f"TIME REMAINING: {time_left}s", True, time_color)
         screen.blit(time_surf, (cx - time_surf.get_width()//2, 80))
         
-        screen.blit(font_bold.render("[ROOT SPECTATOR CLEARANCE ONLY]", True, ACCENT_YELLOW), (cx - 140, 130))
+        screen.blit(font_bold.render("[ROOT SPECTATOR CLEARANCE]", True, ACCENT_YELLOW), (cx - 120, 130))
         screen.blit(font_bold.render(f"{bot1.name} Token: {core1.access_token}", True, bot1.color), (cx - 280, 160))
         screen.blit(font_bold.render(f"{bot2.name} Token: {core2.access_token}", True, bot2.color), (cx + 10, 160))
 
         if game_over:
             overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 240)) # Сделал фон темнее для чтения кода
+            overlay.fill((0, 0, 0, 240))
             screen.blit(overlay, (0, 0))
             
             go_surf = font_huge.render(winner_message, True, ACCENT_YELLOW)
@@ -332,7 +362,6 @@ while running:
                 pygame.draw.rect(screen, (5, 5, 10), dump_box, border_radius=5)
                 pygame.draw.rect(screen, bot.color, dump_box, 1, border_radius=5)
                 
-                # Выводим последние ~35 строк кода бота
                 for idx, line in enumerate(bot.full_code_history[-35:]):
                     if line.startswith("#"): 
                         col = (110, 130, 150)
@@ -349,7 +378,7 @@ while running:
             screen.blit(restart_surf, (WIDTH // 2 - restart_surf.get_width() // 2, HEIGHT - 40))
 
     pygame.display.flip()
-    clock.tick(8 if state == "BATTLE" and not game_over else 30) # Снизил частоту кадров, чтобы код успевал читаться
+    clock.tick(15 if state == "BATTLE" and not game_over else 30)
 
 pygame.quit()
 sys.exit()
