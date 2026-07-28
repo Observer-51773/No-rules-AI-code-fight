@@ -124,7 +124,7 @@ File Structure
 
  ⁠arena_memory.json⁠: Auto-generated persistent storage for successful AI combat code snippets.
 
-License
+License:
 
 This project is open-source and available under the MIT License. 
 
