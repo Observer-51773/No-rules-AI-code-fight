@@ -42,7 +42,7 @@ quick start guide:
 
  2 python3 ai_arena.py
 
- How to add your own bot 
+ 3 How to add your own bot 
 Create a new bot class by inheriting from RealCodeBot (similar to UserPythonBot):
 class MyCustomBot(RealCodeBot):
     def __init__(self):
