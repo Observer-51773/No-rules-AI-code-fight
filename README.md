@@ -1,6 +1,6 @@
 
 # No-Rules AI Code Fights: Advanced Syntax & Terminal Dump
-
+ 
 ## The Main Concept and Simulation Goal
 No-Rules AI Code Fights is an automated, visually-driven tactical simulation exploring dynamic decision-making and cyber-warfare theory. 
 
