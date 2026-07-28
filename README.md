@@ -97,6 +97,7 @@ python ai_arena.py
 ```
 Controls and Usage
 Main Menu:
+
  N: Change user nickname profile.
 
  1: Toggle model/provider for Left Bot.
