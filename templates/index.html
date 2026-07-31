@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ASCII Platform — Login / Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="panel center">
+    <pre id="logo" class="animated-ascii"></pre>
+    <h2>Welcome to the Code Share Platform</h2>
+    <form method="post" class="auth-form">
+      <label>Nickname</label>
+      <input name="username" autocomplete="off" required>
+      <label>Password</label>
+      <input name="password" type="password" required>
+      <div class="form-actions">
+        <button type="submit">Login / Create</button>
+        <a href="{{ url_for('dashboard') }}">Continue as Guest (read-only)</a>
+        <a class="btn" href="{{ url_for('open_game') }}">Launch Game (local)</a>
+      </div>
+      <div class="messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for cat, msg in messages %}
+            <div class="msg {{cat}}">{{msg}}</div>
+          {% endfor %}
+        {% endwith %}
+      </div>
+    </form>
+  </div>
+
+  <script>
+  // Animated ASCII frames (unique pattern + slight 2D wobble)
+  const frames = [
+`  .-------------------------------.
+  |  /\\_/\\   CODE-SHARE PLATFORM  |
+  | ( o.o )  2D-ASCII NETWORK HUB  |
+  |  > ^ <   PRESS LOGIN / CREATE  |
+  '-------------------------------'`,
+`  .-------------------------------.
+  |  /\\_/\\   SHARE SNIPPETS FAST  |
+  | ( -.- )  ANIMATED ASCII UI    |
+  |  > ^ <   UNIQUE VISUAL STYLE   |
+  '-------------------------------'`,
+`  .-------------------------------.
+  |  /\\_/\\   ᕦ(ò_óˇ)ᕤ PUBLISH CODE   |
+  | ( o_o )  CONNECT ACCOUNTS     |
+  |  > ^ <   SENSITIVE WORD FILTER |
+  '-------------------------------'`
+  ];
+  let i = 0;
+  const logo = document.getElementById("logo");
+  function tick(){
+    logo.textContent = frames[i];
+    i = (i+1) % frames.length;
+    logo.style.transform = `translateY(${Math.sin(Date.now()/120)*2}px) rotate(${Math.sin(Date.now()/400)*0.5}deg)`;
+  }
+  setInterval(tick, 350);
+  tick();
+  </script>
+</body>
+</html>

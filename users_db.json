@@ -1,0 +1,23 @@
+{
+  "Onserver": {
+    "password": "51773",
+    "wins": 0,
+    "losses": 0,
+    "friends": [],
+    "friend_requests": []
+  },
+  "Observer": {
+    "password": "51773",
+    "wins": 0,
+    "losses": 0,
+    "friends": [],
+    "friend_requests": []
+  },
+  "Orin": {
+    "password": "123",
+    "wins": 0,
+    "losses": 0,
+    "friends": [],
+    "friend_requests": []
+  }
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ profile.username }} — Posts</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="topbar">
+    <div class="title">Posts by {{ profile.username }}</div>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('index') }}">Home</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <main class="feed">
+      {% for p in posts %}
+        <div class="post card">
+          <div class="meta">{{ p['created_at'] }} • {{ p['language'] }}</div>
+          <h4>{{ p['title'] }}</h4>
+          {{ p['code'] | pre }}
+        </div>
+      {% else %}
+        <div class="card">No posts yet.</div>
+      {% endfor %}
+    </main>
+  </div>
+</body>
+</html>
